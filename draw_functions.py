@@ -20,7 +20,7 @@ def draw_histogram(test_data, test_labels, model):
     plt.hist(p_bkg , 50, normed=1, facecolor='red' , alpha=0.4, label='pi0')
     plt.xlabel('Prediction')
     plt.ylabel('Probability')
-    plt.title(r'$\mathrm{Histogram\ of\ IQ:}\ \mu=100,\ \sigma=15$')
+    plt.title('Binary Classification Histogram')
     plt.yscale('log')
     plt.grid(True)
     plt.legend(loc='upper right')
@@ -32,8 +32,8 @@ def draw_roc_curve(test_data, test_labels, model):
 
     # Draw the ROC curve
     fpr, tpr, _ = roc_curve(test_labels, predictions)
-    plt.xlim([.0, 1.04])
-    plt.ylim([.0, 1.04])
+    plt.xlim([.0, 1.01])
+    plt.ylim([.0, 1.01])
     plt.title("ROC Curve")
     plt.plot( tpr, 1-fpr )
     
@@ -43,3 +43,44 @@ def draw_loss_history(my_fit):
     plt.ylabel('Loss')
     plt.title('Training Error by Epoch')
     plt.plot(my_fit.history['loss'])
+    
+def draw_list(label_list, predictions, histories):
+    # Set up the plot
+    plt.figure(figsize=(10,10))
+    plt.xlabel('Epoch')
+    plt.ylabel('Loss')
+    plt.title('Training Error by Epoch')
+    plt.ylim(bottom=0)
+
+    # Draw the histories
+    for label in label_list:
+        plt.plot(histories[label], label = label, linewidth=1.5)
+
+    # Put in the legend (with thick lines!)
+    leg = plt.legend(loc='upper right')
+    for legobj in leg.legendHandles:
+        legobj.set_linewidth(8.0)
+    plt.show()
+    
+    # Set up plot
+    plt.figure(figsize=(10,10))
+    plt.xlim([.7, 1.01])
+    plt.ylim([.7, 1.01])
+    plt.title("ROC Curve")
+
+    # Draw the roc curves
+    for label in label_list:
+        pred = predictions[label][0].reshape(predictions[label][0].shape[0])
+        truth = predictions[label][1].astype(int)
+        fpr, tpr, _ = roc_curve(truth, pred)
+        plt.plot( tpr, 1-fpr , label = label, linewidth=1.5)
+        plt.xlabel('True Positive Rate')
+        plt.ylabel('True Negative Rate')
+
+    # Draw the legend (with thick lines!)
+    leg = plt.legend(loc='lower left')
+    for legobj in leg.legendHandles:
+        legobj.set_linewidth(8.0)
+    plt.show()
+    
+    

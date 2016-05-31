@@ -29,7 +29,8 @@ def convertFile(filename):
 def get_dataset(directory):
     import os
     big=None
-    for fn in filter(None,os.popen('ls %s*.txt.h5'%directory).read().split('\n')):
+    for fn in filter(None,os.popen('ls %s*.h5'%directory).read().split('\n')):
+        if 'fulldataset' in fn: continue
         store=h5py.File(fn,'r')
         if big==None:
             big = np.asarray(store['images'])
