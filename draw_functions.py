@@ -5,7 +5,6 @@ import numpy as np
 import matplotlib.pyplot as plt
 from sklearn.metrics import roc_curve, auc
 
-
 def draw_histogram(test_data, test_labels, model):
     # Get the test signal and background to make the histogram
     test_signal = test_data[np.where(test_labels==1)]
@@ -44,6 +43,13 @@ def draw_loss_history(my_fit):
     plt.title('Training Error by Epoch')
     plt.plot(my_fit.history['loss'])
     
+def draw_val_loss_history(my_fit):
+    plt.ylim(bottom=0)
+    plt.xlabel('Epoch')
+    plt.ylabel('Loss')
+    plt.title('Training Error by Epoch')
+    plt.plot(my_fit.history['val_loss'])
+    
 def draw_list(label_list, predictions, histories):
     # Set up the plot
     plt.figure(figsize=(10,10))
@@ -51,10 +57,16 @@ def draw_list(label_list, predictions, histories):
     plt.ylabel('Loss')
     plt.title('Training Error by Epoch')
     plt.ylim(bottom=0)
+    
+    # Get the colors
+    cmap = plt.get_cmap('jet_r')
+    N = len(label_list)
 
     # Draw the histories
-    for label in label_list:
-        plt.plot(histories[label], label = label, linewidth=1.5)
+    for i, label in enumerate(label_list):
+        color = cmap(float(i)/N) # get color for this plot
+        plt.plot(histories[label]['loss'], label = label + ' loss', linewidth=2, c=color)
+        plt.plot(histories[label]['val_loss'], label = label + ' val_loss', linewidth=2, linestyle='dashed', c=color)
 
     # Put in the legend (with thick lines!)
     leg = plt.legend(loc='upper right')
@@ -67,7 +79,6 @@ def draw_list(label_list, predictions, histories):
     plt.xlim([.7, 1.01])
     plt.ylim([.7, 1.01])
     plt.title("ROC Curve")
-
     # Draw the roc curves
     for label in label_list:
         pred = predictions[label][0].reshape(predictions[label][0].shape[0])
@@ -82,5 +93,3 @@ def draw_list(label_list, predictions, histories):
     for legobj in leg.legendHandles:
         legobj.set_linewidth(8.0)
     plt.show()
-    
-    

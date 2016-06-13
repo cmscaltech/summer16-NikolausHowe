@@ -7,7 +7,7 @@ import ast
 import h5py
 from sklearn.cross_validation import train_test_split
 from keras.models import model_from_json, Sequential
-from keras.layers import Dense, Dropout, Activation, Convolution3D, Flatten, MaxPooling3D, Merge
+from keras.layers import Dense, Dropout, Activation, Convolution2D, Convolution3D, Flatten, MaxPooling2D, MaxPooling3D, Merge
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
 import pickle
@@ -39,7 +39,8 @@ def get_dataset(directory):
             a = np.asarray(store['images'])
             big = np.concatenate((big, a), axis=0)
         store.close()
-    print big.shape
+    if big!=None:
+        print big.shape
     return big
 
 def save_dataset(directory, dataset):
@@ -62,15 +63,15 @@ def train_test( shape=None , split=0.33):
     train_data, test_data, train_labels, test_labels = train_test_split(X, Y, test_size=split, random_state=42)
     return train_data, test_data, train_labels, test_labels
 
-def store_model(model, history, label, predictions=None):
+def store_model(model, history, label, predictions):
     # Save model as JSON
     open("models/%s.json"%label, 'w').write(model.to_json())
     # Save the weights
     model.save_weights("models/%s_w.h5"%label, overwrite=True)
     # Save the history
-    pickle.dump( history, open('models/%s_h.pkl'%label,'w'))
+    pickle.dump(history, open('models/%s_h.pkl'%label,'w'))
     # Predictions is an nx2 matrix of the predicted and truth values
-    if predictions: pickle.dump( predictions, open('models/%s_p.pkl'%label,'w'))
+    pickle.dump(predictions, open('models/%s_p.pkl'%label,'w'))
 
 def load_model(label):
     model = model_from_json(open('models/%s.json'%label).read())

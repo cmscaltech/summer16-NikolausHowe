@@ -10,12 +10,10 @@ import setGPU1
 from io_functions import *
 from draw_functions import *
 
-
 # In[2]:
 
 # 1 is signal; 0 is background
 train_data, test_data, train_labels, test_labels = train_test(shape=(1, 20, 20, 25), split=0.33)
-
 
 # In[3]:
 
@@ -45,9 +43,3 @@ for number in num_nodes:
     
     # Store the model, the weights, and the loss history
     store_model(model, my_fit.history['loss'], 'conv'+str(number))
-
-
-# In[ ]:
-
-
-
